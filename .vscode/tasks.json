@@ -15,6 +15,45 @@
             }
         },
         {
+            "label": "🔧 激活Conda环境",
+            "type": "shell",
+            "command": "conda",
+            "args": ["activate", "torch-env"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "📋 生成requirements.txt",
+            "type": "shell",
+            "command": "powershell",
+            "args": ["-Command", "conda activate torch-env; pip freeze > requirements.txt; echo '✅ Requirements generated'; type requirements.txt"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
+            "label": "📦 检查当前环境",
+            "type": "shell",
+            "command": "powershell",
+            "args": ["-Command", "conda activate torch-env; python --version; conda list torch; pip list | findstr torch"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        },
+        {
             "label": "1️⃣ 快速同步到AutoDL",
             "type": "shell",
             "command": "cmd",
@@ -62,7 +101,7 @@
             "command": "powershell",
             "args": [
                 "-Command",
-                "ssh root@your-instance.autodl.com -p your-ssh-port \"cd ~/BA-segmentation && source venv/bin/activate && screen -dmS training python baseline_training.py && echo 'Training started in screen session'\""
+                "ssh root@your-instance.autodl.com -p your-ssh-port \"cd ~/BA-segmentation && conda activate torch-env && screen -dmS training python baseline_training.py && echo '✅ Training started in screen session'\""
             ],
             "group": "build",
             "presentation": {
@@ -78,7 +117,7 @@
             "command": "powershell",
             "args": [
                 "-Command",
-                "ssh root@your-instance.autodl.com -p your-ssh-port \"screen -ls && echo && tail -20 ~/BA-segmentation/logs/train_*.log\""
+                "ssh root@your-instance.autodl.com -p your-ssh-port \"conda activate torch-env && screen -ls && echo && tail -20 ~/BA-segmentation/logs/train_*.log\""
             ],
             "group": "test",
             "presentation": {

@@ -20,9 +20,13 @@
     "python.analysis.typeCheckingMode": "standard",
     "settingsSync.ignoredExtensions": [],
 
-    // BA项目特定设置
-    "python.defaultInterpreterPath": "./venv/Scripts/python.exe",
+    // 你的Conda环境配置（精确路径）
+    "python.defaultInterpreterPath": "C:/Users/nanao/conda/envs/torch-env/python.exe",
     "python.terminal.activateEnvironment": true,
+    "python.condaPath": "C:/Users/nanao/conda/Scripts/conda.exe",
+    "python.terminal.activateEnvInCurrentTerminal": true,
+    
+    // Python项目设置
     "python.formatting.provider": "black",
     "python.linting.enabled": true,
     "python.linting.flake8Enabled": true,
@@ -45,10 +49,10 @@
     },
     
     "search.exclude": {
-        "**/venv": true,
         "**/data": true,
         "**/results": true,
-        "**/__pycache__": true
+        "**/__pycache__": true,
+        "**/venv": true
     },
     
     "terminal.integrated.defaultProfile.windows": "PowerShell",
