@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Full Improved Model Architecture</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background: #f8f8f8;
+        }
+        
+        .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            background: white;
+            padding: 30px;
+            border-radius: 8px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+        }
+        
+        .title {
+            text-align: center;
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 30px;
+            color: #333;
+        }
+        
+        svg {
+            width: 100%;
+            height: auto;
+        }
+        
+        .legend {
+            margin-top: 20px;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 5px;
+        }
+        
+        .legend-title {
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+        
+        .legend-items {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 10px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 14px;
+        }
+        
+        .color-box {
+            width: 20px;
+            height: 20px;
+            border: 1px solid #333;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="title">Full Improved Model: Detailed Architecture</div>
+        
+        <svg viewBox="0 0 1200 800">
+            <!-- 定义渐变和图案 -->
+            <defs>
+                <linearGradient id="encoderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#e3f2fd;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#bbdefb;stop-opacity:1" />
+                </linearGradient>
+                
+                <linearGradient id="decoderGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+                    <stop offset="0%" style="stop-color:#e8f5e9;stop-opacity:1" />
+                    <stop offset="100%" style="stop-color:#c8e6c9;stop-opacity:1" />
+                </linearGradient>
+                
+                <pattern id="dropoutPattern" patternUnits="userSpaceOnUse" width="4" height="4">
+                    <circle cx="2" cy="2" r="0.5" fill="#666" opacity="0.3"/>
+                </pattern>
+                
+                <marker id="arrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                    <polygon points="0 0, 10 5, 0 10" fill="#333"/>
+                </marker>
+                
+                <marker id="skipArrow" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                    <polygon points="0 0, 10 5, 0 10" fill="#ff5722"/>
+                </marker>
+            </defs>
+            
+            <!-- 标题 -->
+            <text x="600" y="30" text-anchor="middle" font-size="16" font-weight="bold">ImprovedResNet18Full Architecture</text>
+            
+            <!-- 输入 -->
+            <rect x="50" y="350" width="100" height="60" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+            <text x="100" y="375" text-anchor="middle" font-size="12" font-weight="bold">Input Image</text>
+            <text x="100" y="395" text-anchor="middle" font-size="10">[B, 3, 512, 512]</text>
+            
+            <!-- 编码器部分 -->
+            <g id="encoder">
+                <!-- Conv1 + MaxPool -->
+                <rect x="200" y="100" width="120" height="50" fill="url(#encoderGrad)" stroke="#333" stroke-width="1"/>
+                <text x="260" y="120" text-anchor="middle" font-size="11" font-weight="bold">Conv1 + MaxPool</text>
+                <text x="260" y="135" text-anchor="middle" font-size="9">7×7, stride=2, pool</text>
+                <text x="260" y="145" text-anchor="middle" font-size="9">[64, 128, 128]</text>
+                
+                <!-- Layer1 (e1) -->
+                <rect x="200" y="180" width="120" height="60" fill="url(#encoderGrad)" stroke="#333" stroke-width="1"/>
+                <text x="260" y="200" text-anchor="middle" font-size="11" font-weight="bold">Layer1 (e1)</text>
+                <text x="260" y="215" text-anchor="middle" font-size="9">2 × BasicBlock</text>
+                <text x="260" y="230" text-anchor="middle" font-size="9">[64, 128, 128]</text>
+                
+                <!-- Layer2 (e2) -->
+                <rect x="200" y="270" width="120" height="60" fill="url(#encoderGrad)" stroke="#333" stroke-width="1"/>
+                <text x="260" y="290" text-anchor="middle" font-size="11" font-weight="bold">Layer2 (e2)</text>
+                <text x="260" y="305" text-anchor="middle" font-size="9">2 × BasicBlock, s=2</text>
+                <text x="260" y="320" text-anchor="middle" font-size="9">[128, 64, 64]</text>
+                
+                <!-- Layer3 (e3) -->
+                <rect x="200" y="360" width="120" height="60" fill="url(#encoderGrad)" stroke="#333" stroke-width="1"/>
+                <text x="260" y="380" text-anchor="middle" font-size="11" font-weight="bold">Layer3 (e3)</text>
+                <text x="260" y="395" text-anchor="middle" font-size="9">2 × BasicBlock, s=2</text>
+                <text x="260" y="410" text-anchor="middle" font-size="9">[256, 32, 32]</text>
+                
+                <!-- Layer4 (e4) -->
+                <rect x="200" y="450" width="120" height="60" fill="url(#encoderGrad)" stroke="#333" stroke-width="1"/>
+                <text x="260" y="470" text-anchor="middle" font-size="11" font-weight="bold">Layer4 (e4)</text>
+                <text x="260" y="485" text-anchor="middle" font-size="9">2 × BasicBlock, s=2</text>
+                <text x="260" y="500" text-anchor="middle" font-size="9">[512, 16, 16]</text>
+            </g>
+            
+            <!-- 解码器部分 -->
+            <g id="decoder">
+                <!-- Decoder4 -->
+                <rect x="600" y="450" width="140" height="60" fill="url(#decoderGrad)" stroke="#333" stroke-width="1"/>
+                <rect x="600" y="450" width="140" height="60" fill="url(#dropoutPattern)" opacity="0.3"/>
+                <text x="670" y="470" text-anchor="middle" font-size="11" font-weight="bold">Decoder4</text>
+                <text x="670" y="485" text-anchor="middle" font-size="9">Conv×2 + BN + ReLU</text>
+                <text x="670" y="500" text-anchor="middle" font-size="9">[256, 16, 16]</text>
+                <rect x="720" y="455" width="15" height="15" fill="#ff9800" stroke="#333" stroke-width="1"/>
+                <text x="727" y="465" text-anchor="middle" font-size="8" fill="white">D</text>
+                
+                <!-- Decoder3 -->
+                <rect x="600" y="360" width="140" height="60" fill="url(#decoderGrad)" stroke="#333" stroke-width="1"/>
+                <rect x="600" y="360" width="140" height="60" fill="url(#dropoutPattern)" opacity="0.3"/>
+                <text x="670" y="380" text-anchor="middle" font-size="11" font-weight="bold">Decoder3</text>
+                <text x="670" y="395" text-anchor="middle" font-size="9">Up×2 + Cat(e3) + Conv</text>
+                <text x="670" y="410" text-anchor="middle" font-size="9">[128, 32, 32]</text>
+                <rect x="720" y="365" width="15" height="15" fill="#ff9800" stroke="#333" stroke-width="1"/>
+                <text x="727" y="375" text-anchor="middle" font-size="8" fill="white">D</text>
+                
+                <!-- Decoder2 (深度监督) -->
+                <rect x="600" y="270" width="140" height="60" fill="#ffd54f" stroke="#333" stroke-width="2"/>
+                <rect x="600" y="270" width="140" height="60" fill="url(#dropoutPattern)" opacity="0.3"/>
+                <text x="670" y="290" text-anchor="middle" font-size="11" font-weight="bold">Decoder2 ⚠</text>
+                <text x="670" y="305" text-anchor="middle" font-size="9">Up×2 + Cat(e2) + Conv</text>
+                <text x="670" y="320" text-anchor="middle" font-size="9">[64, 64, 64]</text>
+                <rect x="720" y="275" width="15" height="15" fill="#ff9800" stroke="#333" stroke-width="1"/>
+                <text x="727" y="285" text-anchor="middle" font-size="8" fill="white">D</text>
+                
+                <!-- Decoder1 -->
+                <rect x="600" y="180" width="140" height="60" fill="url(#decoderGrad)" stroke="#333" stroke-width="1"/>
+                <rect x="600" y="180" width="140" height="60" fill="url(#dropoutPattern)" opacity="0.3"/>
+                <text x="670" y="200" text-anchor="middle" font-size="11" font-weight="bold">Decoder1</text>
+                <text x="670" y="215" text-anchor="middle" font-size="9">Up×2 + Cat(e1) + Conv</text>
+                <text x="670" y="230" text-anchor="middle" font-size="9">[64, 128, 128]</text>
+                <rect x="720" y="185" width="15" height="15" fill="#ffb74d" stroke="#333" stroke-width="1"/>
+                <text x="727" y="195" text-anchor="middle" font-size="8" fill="white">d</text>
+            </g>
+            
+            <!-- 输出头 -->
+            <g id="output-heads">
+                <!-- 主输出 -->
+                <rect x="850" y="180" width="120" height="60" fill="#e1f5fe" stroke="#333" stroke-width="2"/>
+                <text x="910" y="200" text-anchor="middle" font-size="11" font-weight="bold">Main Head</text>
+                <text x="910" y="215" text-anchor="middle" font-size="9">Conv 1×1 (64→2)</text>
+                <text x="910" y="230" text-anchor="middle" font-size="9">[2, 128, 128]</text>
+                
+                <!-- 辅助输出 -->
+                <rect x="850" y="270" width="120" height="60" fill="#fff3e0" stroke="#ff6f00" stroke-width="2" stroke-dasharray="5,5"/>
+                <text x="910" y="290" text-anchor="middle" font-size="11" font-weight="bold">Aux Head</text>
+                <text x="910" y="305" text-anchor="middle" font-size="9">Conv 1×1 (64→2)</text>
+                <text x="910" y="320" text-anchor="middle" font-size="9">[2, 64, 64]</text>
+            </g>
+            
+            <!-- 最终输出 -->
+            <rect x="1050" y="220" width="100" height="60" fill="#f5f5f5" stroke="#333" stroke-width="2"/>
+            <text x="1100" y="245" text-anchor="middle" font-size="12" font-weight="bold">Output</text>
+            <text x="1100" y="265" text-anchor="middle" font-size="10">[B, 2, 512, 512]</text>
+            
+            <!-- 损失函数 -->
+            <rect x="850" y="400" width="250" height="80" fill="#ffebee" stroke="#d32f2f" stroke-width="2" stroke-dasharray="8,4"/>
+            <text x="975" y="420" text-anchor="middle" font-size="12" font-weight="bold" fill="#d32f2f">Combined Loss Function</text>
+            <text x="975" y="440" text-anchor="middle" font-size="10">Total Loss = 0.6 × Main_Loss + 0.4 × Aux_Loss</text>
+            <text x="975" y="455" text-anchor="middle" font-size="10">Main_Loss = FocalLoss(main_out, GT)</text>
+            <text x="975" y="470" text-anchor="middle" font-size="10">Aux_Loss = FocalLoss(aux_out, GT)</text>
+            
+            <!-- 连接线 -->
+            <!-- 输入到编码器 -->
+            <path d="M 150 380 L 200 125" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+            
+            <!-- 编码器内部连接 -->
+            <path d="M 260 150 L 260 180" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+            <path d="M 260 240 L 260 270" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+            <path d="M 260 330 L 260 360" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+            <path d="M 260 420 L 260 450" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+            
+            <!-- e4到Decoder4 -->
+            <path d="M 320 480 L 600 480" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+            
+            <!-- 解码器内部连接 -->
+            <path d="M 670 450 L 670 420" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+            <path d="M 670 360 L 670 330" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+            <path d="M 670 270 L 670 240" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+            
+            <!-- Skip connections -->
+            <path d="M 320 210 L 580 210 L 600 210" stroke="#ff5722" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#skipArrow)"/>
+            <path d="M 320 300 L 580 300 L 600 300" stroke="#ff5722" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#skipArrow)"/>
+            <path d="M 320 390 L 580 390 L 600 390" stroke="#ff5722" stroke-width="2" stroke-dasharray="8,4" marker-end="url(#skipArrow)"/>
+            
+            <!-- Decoder1到主输出 -->
+            <path d="M 740 210 L 850 210" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+            
+            <!-- Decoder2到辅助输出 -->
+            <path d="M 740 300 L 850 300" stroke="#ff6f00" stroke-width="2" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+            
+            <!-- 输出头到最终输出 -->
+            <path d="M 970 210 L 1050 250" stroke="#333" stroke-width="2" marker-end="url(#arrow)"/>
+            <path d="M 970 300 L 1030 260" stroke="#ff6f00" stroke-width="1" stroke-dasharray="5,5" marker-end="url(#arrow)"/>
+            
+            <!-- 损失连接 -->
+            <path d="M 910 240 L 910 400" stroke="#d32f2f" stroke-width="1" stroke-dasharray="4,4"/>
+            <path d="M 910 330 L 910 400" stroke="#d32f2f" stroke-width="1" stroke-dasharray="4,4"/>
+            
+            <!-- 标注 -->
+            <text x="450" y="210" text-anchor="middle" font-size="10" fill="#ff5722">e1 skip</text>
+            <text x="450" y="300" text-anchor="middle" font-size="10" fill="#ff5722">e2 skip</text>
+            <text x="450" y="390" text-anchor="middle" font-size="10" fill="#ff5722">e3 skip</text>
+            
+            <!-- Dropout率标注 -->
+            <text x="760" y="470" font-size="9" fill="#666">Drop=0.1</text>
+            <text x="760" y="380" font-size="9" fill="#666">Drop=0.1</text>
+            <text x="760" y="290" font-size="9" fill="#666">Drop=0.1</text>
+            <text x="760" y="200" font-size="9" fill="#666">Drop=0.05</text>
+            
+            <!-- 上采样标注 -->
+            <text x="1010" y="195" font-size="9" fill="#666">Up×4</text>
+            <text x="1010" y="285" font-size="9" fill="#666">Up×8</text>
+            
+            <!-- Focal Loss参数 -->
+            <text x="975" y="500" text-anchor="middle" font-size="9" fill="#666">α=[0.25, 0.75], γ=2.0</text>
+            
+            <!-- 深度监督标记 -->
+            <circle cx="780" cy="300" r="15" fill="#ff6f00" stroke="#333" stroke-width="2"/>
+            <text x="780" y="305" text-anchor="middle" font-size="10" fill="white" font-weight="bold">DS</text>
+            <text x="820" y="305" font-size="9">Deep Supervision</text>
+        </svg>
+        
+        <div class="legend">
+            <div class="legend-title">图例说明</div>
+            <div class="legend-items">
+                <div class="legend-item">
+                    <div class="color-box" style="background: linear-gradient(135deg, #e3f2fd, #bbdefb);"></div>
+                    <span>编码器层 (ResNet18)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background: linear-gradient(135deg, #e8f5e9, #c8e6c9);"></div>
+                    <span>解码器层</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background: #ffd54f;"></div>
+                    <span>深度监督点 (Decoder2)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="background: #ff9800;"></div>
+                    <span>D: Dropout(0.1), d: Dropout(0.05)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="border: 2px dashed #ff5722; background: white;"></div>
+                    <span>跳跃连接</span>
+                </div>
+                <div class="legend-item">
+                    <div class="color-box" style="border: 2px dashed #ff6f00; background: white;"></div>
+                    <span>辅助输出路径</span>
+                </div>
+            </div>
+        </div>
+        
+        <div style="margin-top: 20px; padding: 15px; background: #f0f0f0; border-radius: 5px;">
+            <h3 style="margin-top: 0;">关键特性说明：</h3>
+            <ol style="line-height: 1.8;">
+                <li><strong>编码器</strong>：ResNet18的4个layer逐步降采样，提取多尺度特征</li>
+                <li><strong>解码器</strong>：4个解码块，每个包含上采样、特征拼接、卷积和Dropout</li>
+                <li><strong>Dropout正则化</strong>：Decoder4/3/2使用0.1，Decoder1使用0.05</li>
+                <li><strong>深度监督</strong>：从Decoder2产生辅助输出，训练时提供额外监督信号</li>
+                <li><strong>跳跃连接</strong>：e1→Decoder1, e2→Decoder2, e3→Decoder3，保留细节信息</li>
+                <li><strong>损失函数</strong>：主损失权重0.6，辅助损失权重0.4，均使用Focal Loss</li>
+                <li><strong>输出</strong>：主输出和辅助输出都上采样到原始分辨率512×512</li>
+            </ol>
+        </div>
+    </div>
+</body>
+</html>

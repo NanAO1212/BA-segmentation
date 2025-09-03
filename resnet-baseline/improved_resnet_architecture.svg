@@ -1,0 +1,150 @@
+<svg viewBox="0 0 800 1200" xmlns="http://www.w3.org/2000/svg">
+  <!-- Title -->
+  <text x="400" y="30" font-size="20" font-weight="bold" text-anchor="middle" fill="#333">
+    Improved Simple ResNet for Burned Area Segmentation
+  </text>
+  
+  <!-- Input -->
+  <rect x="300" y="60" width="200" height="40" fill="#e8f4f8" stroke="#0077be" stroke-width="2"/>
+  <text x="400" y="85" text-anchor="middle" font-size="14">Input: 512×512×3 (RGB)</text>
+  
+  <!-- Arrow -->
+  <line x1="400" y1="100" x2="400" y2="130" stroke="#666" stroke-width="2" marker-end="url(#arrowhead)"/>
+  
+  <!-- Encoder Section -->
+  <text x="400" y="150" font-size="16" font-weight="bold" text-anchor="middle" fill="#0077be">
+    ENCODER (Pretrained ResNet18)
+  </text>
+  
+  <!-- Initial Conv -->
+  <rect x="280" y="170" width="240" height="35" fill="#fff3cd" stroke="#856404" stroke-width="2"/>
+  <text x="400" y="192" text-anchor="middle" font-size="12">Conv 7×7, 64 → BN → ReLU → MaxPool</text>
+  
+  <!-- Stage 1 -->
+  <g transform="translate(0, 220)">
+    <rect x="250" y="0" width="300" height="50" fill="#d4edda" stroke="#155724" stroke-width="2" rx="5"/>
+    <text x="400" y="20" text-anchor="middle" font-size="12" font-weight="bold">Stage 1: ResBlock×2</text>
+    <text x="400" y="38" text-anchor="middle" font-size="11">Output: c1 (128×128×64)</text>
+    <!-- Skip connection line -->
+    <line x1="550" y1="25" x2="620" y2="25" stroke="#155724" stroke-width="2"/>
+    <line x1="620" y1="25" x2="620" y2="750" stroke="#155724" stroke-width="2" stroke-dasharray="5,5"/>
+  </g>
+  
+  <!-- Stage 2 -->
+  <g transform="translate(0, 290)">
+    <rect x="250" y="0" width="300" height="50" fill="#d4edda" stroke="#155724" stroke-width="2" rx="5"/>
+    <text x="400" y="20" text-anchor="middle" font-size="12" font-weight="bold">Stage 2: ResBlock×2</text>
+    <text x="400" y="38" text-anchor="middle" font-size="11">Output: c2 (64×64×128)</text>
+    <!-- Skip connection line -->
+    <line x1="550" y1="25" x2="600" y2="25" stroke="#155724" stroke-width="2"/>
+    <line x1="600" y1="25" x2="600" y2="620" stroke="#155724" stroke-width="2" stroke-dasharray="5,5"/>
+  </g>
+  
+  <!-- Stage 3 -->
+  <g transform="translate(0, 360)">
+    <rect x="250" y="0" width="300" height="50" fill="#d4edda" stroke="#155724" stroke-width="2" rx="5"/>
+    <text x="400" y="20" text-anchor="middle" font-size="12" font-weight="bold">Stage 3: ResBlock×2</text>
+    <text x="400" y="38" text-anchor="middle" font-size="11">Output: c3 (32×32×256)</text>
+    <!-- Skip connection line -->
+    <line x1="550" y1="25" x2="580" y2="25" stroke="#155724" stroke-width="2"/>
+    <line x1="580" y1="25" x2="580" y2="490" stroke="#155724" stroke-width="2" stroke-dasharray="5,5"/>
+  </g>
+  
+  <!-- Stage 4 -->
+  <g transform="translate(0, 430)">
+    <rect x="250" y="0" width="300" height="50" fill="#d4edda" stroke="#155724" stroke-width="2" rx="5"/>
+    <text x="400" y="20" text-anchor="middle" font-size="12" font-weight="bold">Stage 4: ResBlock×2</text>
+    <text x="400" y="38" text-anchor="middle" font-size="11">Output: c4 (16×16×512)</text>
+  </g>
+  
+  <!-- Decoder Section -->
+  <text x="400" y="520" font-size="16" font-weight="bold" text-anchor="middle" fill="#dc3545">
+    DECODER (with Skip Connections)
+  </text>
+  
+  <!-- Decoder 4 -->
+  <g transform="translate(0, 540)">
+    <rect x="250" y="0" width="300" height="60" fill="#f8d7da" stroke="#721c24" stroke-width="2" rx="5"/>
+    <text x="400" y="20" text-anchor="middle" font-size="12" font-weight="bold">Decoder4: ConvBlock</text>
+    <text x="400" y="38" text-anchor="middle" font-size="11">[512→512], Dropout(0.1)</text>
+    <text x="400" y="53" text-anchor="middle" font-size="10" fill="#666">↑ Upsample 2×</text>
+  </g>
+  
+  <!-- Concat symbol -->
+  <circle cx="400" cy="620" r="15" fill="#ffc107" stroke="#856404" stroke-width="2"/>
+  <text x="400" y="625" text-anchor="middle" font-size="18" font-weight="bold">⊕</text>
+  
+  <!-- Decoder 3 -->
+  <g transform="translate(0, 650)">
+    <rect x="250" y="0" width="300" height="60" fill="#f8d7da" stroke="#721c24" stroke-width="2" rx="5"/>
+    <text x="400" y="20" text-anchor="middle" font-size="12" font-weight="bold">Decoder3: ConvBlock</text>
+    <text x="400" y="38" text-anchor="middle" font-size="11">[768→256], Dropout(0.1)</text>
+    <text x="400" y="53" text-anchor="middle" font-size="10" fill="#666">↑ Upsample 2×</text>
+  </g>
+  
+  <!-- Concat symbol -->
+  <circle cx="400" cy="730" r="15" fill="#ffc107" stroke="#856404" stroke-width="2"/>
+  <text x="400" y="735" text-anchor="middle" font-size="18" font-weight="bold">⊕</text>
+  
+  <!-- Decoder 2 with Auxiliary Output -->
+  <g transform="translate(0, 760)">
+    <rect x="250" y="0" width="300" height="60" fill="#f8d7da" stroke="#721c24" stroke-width="2" rx="5"/>
+    <text x="400" y="20" text-anchor="middle" font-size="12" font-weight="bold">Decoder2: ConvBlock</text>
+    <text x="400" y="38" text-anchor="middle" font-size="11">[384→128], Dropout(0.1)</text>
+    <text x="400" y="53" text-anchor="middle" font-size="10" fill="#666">↑ Upsample 2×</text>
+    
+    <!-- Auxiliary output S2 -->
+    <line x1="400" y1="60" x2="150" y2="60" stroke="#666" stroke-width="1" stroke-dasharray="3,3"/>
+    <rect x="50" y="40" width="100" height="40" fill="#e7f3ff" stroke="#004085" stroke-width="2"/>
+    <text x="100" y="55" text-anchor="middle" font-size="11">S2: Aux Output</text>
+    <text x="100" y="70" text-anchor="middle" font-size="10">(64×64×2)</text>
+  </g>
+  
+  <!-- Concat symbol -->
+  <circle cx="400" cy="840" r="15" fill="#ffc107" stroke="#856404" stroke-width="2"/>
+  <text x="400" y="845" text-anchor="middle" font-size="18" font-weight="bold">⊕</text>
+  
+  <!-- Decoder 1 -->
+  <g transform="translate(0, 870)">
+    <rect x="250" y="0" width="300" height="60" fill="#f8d7da" stroke="#721c24" stroke-width="2" rx="5"/>
+    <text x="400" y="20" text-anchor="middle" font-size="12" font-weight="bold">Decoder1: ConvBlock</text>
+    <text x="400" y="38" text-anchor="middle" font-size="11">[192→64], Dropout(0.05)</text>
+    <text x="400" y="53" text-anchor="middle" font-size="10" fill="#666">Conv 3×3 → 2 classes</text>
+  </g>
+  
+  <!-- Main Output S1 -->
+  <rect x="300" y="950" width="200" height="50" fill="#d1ecf1" stroke="#004085" stroke-width="2"/>
+  <text x="400" y="970" text-anchor="middle" font-size="12" font-weight="bold">S1: Main Output</text>
+  <text x="400" y="988" text-anchor="middle" font-size="11">(128×128×2) → Upsample</text>
+  
+  <!-- Final Output -->
+  <rect x="300" y="1020" width="200" height="40" fill="#28a745" stroke="#155724" stroke-width="2"/>
+  <text x="400" y="1040" text-anchor="middle" font-size="12" font-weight="bold" fill="white">Final Segmentation</text>
+  <text x="400" y="1055" text-anchor="middle" font-size="11" fill="white">512×512×2</text>
+  
+  <!-- Loss Function -->
+  <g transform="translate(0, 1080)">
+    <rect x="250" y="0" width="300" height="60" fill="#fff3cd" stroke="#856404" stroke-width="2" rx="5"/>
+    <text x="400" y="20" text-anchor="middle" font-size="12" font-weight="bold">Loss Function</text>
+    <text x="400" y="38" text-anchor="middle" font-size="11">Focal Loss (α=[0.25, 0.75], γ=2.0)</text>
+    <text x="400" y="53" text-anchor="middle" font-size="11">Total = Loss(S1) + 0.4×Loss(S2)</text>
+  </g>
+  
+  <!-- Key Features Box -->
+  <g transform="translate(50, 1000)">
+    <rect x="0" y="0" width="180" height="120" fill="#f8f9fa" stroke="#6c757d" stroke-width="1" rx="5"/>
+    <text x="90" y="20" text-anchor="middle" font-size="12" font-weight="bold">Key Features</text>
+    <text x="10" y="40" font-size="10">• Pretrained weights</text>
+    <text x="10" y="55" font-size="10">• Skip connections</text>
+    <text x="10" y="70" font-size="10">• Deep supervision</text>
+    <text x="10" y="85" font-size="10">• Focal loss</text>
+    <text x="10" y="100" font-size="10">• Parameters: ~19.6M</text>
+  </g>
+  
+  <!-- Arrow marker definition -->
+  <defs>
+    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="3" orient="auto">
+      <polygon points="0 0, 10 3, 0 6" fill="#666"/>
+    </marker>
+  </defs>
+</svg>

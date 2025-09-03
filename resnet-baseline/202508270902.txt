@@ -1,0 +1,159 @@
+我创建了完整的基线模型和评估框架。关于论文需要的评估指标，以下是我的建议：
+推荐的评估指标体系
+核心分割指标（必须有）
+
+IoU（交并比）：特别是过火区IoU，这是最重要的
+mIoU：平均IoU，显示整体性能
+F1-Score：平衡精确率和召回率
+PrecisionRecall：对于过火区检测很重要
+
+区分度指标（增强说服力）
+
+Boundary F1-Score：边界精度，显示分割质量
+Kappa系数：考虑随机一致性的准确度
+类别平衡指标：显示模型不偏向某一类
+
+效率指标（实用性）
+
+FPS（帧率）：推理速度
+参数量：模型复杂度
+内存占用：实际部署需求
+推理时间方差：稳定性
+
+鲁棒性指标（可选但有价值）
+
+不同光照条件下的性能
+部分云遮挡的鲁棒性
+跨数据集泛化能力
+
+实验设计建议
+消融实验顺序
+1. Vanilla ResNet18 ~0.70-0.75 IoU
+2. + Focal Loss ~0.80-0.82 IoU (提升~10%)
+3. + Skip Connections ~0.86-0.88 IoU (提升~7%)
+4. + Deep Supervision + Dropout 0.90+ IoU (提升~2-3%)
+关键对比维度
+
+性能提升：每个组件贡献多少
+效率权衡：参数增加vs性能提升
+训练稳定性：收敛速度和稳定性
+
+论文表格示例
+Model                IoU↑   F1↑    Precision  Recall  Params↓  FPS↑
+--------------------------------------------------------------------
+Vanilla ResNet18     0.750  0.812  0.835      0.791   11.7M    125
++ Focal Loss         0.820  0.863  0.881      0.846   11.7M    125
++ Skip Connections   0.880  0.912  0.925      0.899   15.2M    95
+Full Model (Ours)    0.903  0.934  0.942      0.926   19.6M    82
+--------------------------------------------------------------------
+DCNet                0.929  -      -          -       35.3M    45
+运行建议
+
+先跑Vanilla baseline确认基础性能
+逐步添加组件验证每个改进
+最后跑完整模型展示最终效果
+记录训练曲线显示收敛速度差异
+
+训练脚本会自动生成详细的JSON报告，包含所有指标，方便制作论文图表。
+这套评估体系能充分证明你的方法虽然简单，但每个设计选择都是经过深思熟虑的，最终达到了与复杂方法相当的性能。RetryF具体要怎么操作？EditPlanned baseline experiment steps for improved ResNet model.用户问具体要怎么操作，我需要给出清晰的步骤指导。他已经有improved_simple_resnet训练好了（0.9035 IoU），现在需要运行基线对比实验。以下是具体的操作步骤：
+第1步：准备文件
+将这些文件放在你的项目目录下：
+bashsimple_resnet
+├── baseline_models.py          # 刚创建的基线模型文件
+├── baseline_training.py        # 刚创建的训练脚本
+├── simplified_cbas_dataset.py  # 你已有的数据集文件
+├── improved_simple_resnet.py   # 你已有的完整模型
+├── ResNet.py                    # 你已有的ResNet定义
+└── data                        # 你的数据目录
+    ├── Train
+    └── Test
+第2步：运行基线对比实验
+bash# 1. 先测试模型是否正常工作
+python baseline_models.py
+
+# 2. 运行完整的对比实验（会训练4个模型）
+python baseline_training.py
+第3步：如果想单独训练某个模型
+修改baseline_training.py的主函数，只训练特定模型：
+python# 在main()函数中，注释掉不需要的模型
+models = {
+    'vanilla_resnet18' VanillaResNet18(pretrained=True),
+    # 'resnet18_focal' ResNet18FocalLoss(pretrained=True),  # 注释掉
+    # 'resnet18_skip' ResNet18WithSkip(pretrained=True),    # 注释掉
+    # 'full_improved' ImprovedResNet18Full(pretrained=True) # 注释掉
+}
+第4步：快速测试（减少训练时间）
+如果想先快速验证代码，可以减少epochs：
+python# 在baseline_training.py中修改config
+config = {
+    ...
+    'epochs' 10,  # 改为10个epochs快速测试
+    'validate_every' 2,  # 每2个epoch验证一次
+    ...
+}
+第5步：使用已训练好的模型做对比
+如果你不想重新训练，可以创建一个评估脚本：
+python# evaluate_only.py
+import torch
+from baseline_models import VanillaResNet18
+from baseline_training import ComprehensiveMetrics
+from simplified_cbas_dataset import create_dataloaders
+
+# 加载已有的最佳模型
+checkpoint = torch.load('checkpointsbest_model.pth')
+
+# 创建vanilla baseline
+vanilla_model = VanillaResNet18()
+
+# 在测试集上评估两个模型
+_, test_loader, _, _ = create_dataloaders(
+    train_dir='dataTrain',
+    test_dir='dataTest',
+    batch_size=8
+)
+
+# 评估并对比...
+第6步：生成论文所需的图表
+训练完成后，使用生成的JSON文件制作图表：
+pythonimport json
+import matplotlib.pyplot as plt
+
+# 读取结果
+with open('baseline_checkpointscomparison_report_.json', 'r') as f
+    results = json.load(f)
+
+# 绘制对比柱状图
+models = list(results.keys())
+ious = [results[m]['best_iou'] for m in models]
+
+plt.figure(figsize=(10, 6))
+plt.bar(models, ious)
+plt.ylabel('IoU')
+plt.title('Model Performance Comparison')
+plt.show()
+建议的执行顺序
+
+先跑vanilla baseline（最重要）
+bash# 只训练vanilla，看看基础性能
+# 预期IoU 0.70-0.75
+
+如果vanilla结果合理，再跑其他
+bash# 运行完整对比
+python baseline_training.py
+
+记录关键数据点
+
+Vanilla IoU、训练时间
++Focal 提升了多少
++Skip 又提升了多少
+Full 最终性能
+
+
+
+可能的问题和解决
+
+内存不足：减小batch_size到8或4
+训练太慢：减少epochs到30
+结果不理想：检查数据加载是否正确
+
+最关键的是vanilla baseline的结果，它应该明显低于你的0.9035，这样才能证明你的改进有效。

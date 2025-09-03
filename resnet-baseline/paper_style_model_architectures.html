@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="zh">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Baseline Model Architectures</title>
+    <style>
+        body {
+            font-family: 'Times New Roman', serif;
+            margin: 0;
+            padding: 20px;
+            background: white;
+            color: #000;
+        }
+        
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        
+        .figure-title {
+            text-align: center;
+            font-weight: bold;
+            margin: 30px 0 20px 0;
+            font-size: 16px;
+        }
+        
+        .model-container {
+            border: 1px solid #000;
+            margin-bottom: 40px;
+            background: #fff;
+            padding: 20px;
+        }
+        
+        .model-label {
+            font-weight: bold;
+            margin-bottom: 20px;
+            font-size: 14px;
+        }
+        
+        svg {
+            width: 100%;
+            height: auto;
+            display: block;
+        }
+        
+        /* 图例 */
+        .legend {
+            display: flex;
+            justify-content: center;
+            gap: 30px;
+            margin: 20px 0;
+            font-size: 12px;
+        }
+        
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .legend-box {
+            width: 30px;
+            height: 15px;
+            border: 1px solid #000;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="figure-title">Figure 1. Architecture of baseline models for burned area segmentation</div>
+        
+        <!-- Model (a): Vanilla ResNet18 -->
+        <div class="model-container">
+            <div class="model-label">(a) Vanilla ResNet18</div>
+            <svg viewBox="0 0 800 250">
+                <!-- 输入 -->
+                <rect x="20" y="100" width="80" height="50" fill="#e8e8e8" stroke="#000" stroke-width="1"/>
+                <text x="60" y="130" text-anchor="middle" font-size="12">Input</text>
+                <text x="60" y="145" text-anchor="middle" font-size="10">3×512×512</text>
+                
+                <!-- ResNet18编码器 -->
+                <rect x="140" y="85" width="120" height="80" fill="#b8d4f1" stroke="#000" stroke-width="1"/>
+                <text x="200" y="110" text-anchor="middle" font-size="12">ResNet18</text>
+                <text x="200" y="125" text-anchor="middle" font-size="10">Encoder</text>
+                <text x="200" y="140" text-anchor="middle" font-size="9">(Pretrained)</text>
+                <text x="200" y="155" text-anchor="middle" font-size="10">512×16×16</text>
+                
+                <!-- 分割头 -->
+                <rect x="300" y="85" width="120" height="80" fill="#c8e6c9" stroke="#000" stroke-width="1"/>
+                <text x="360" y="105" text-anchor="middle" font-size="12">Seg Head</text>
+                <text x="360" y="120" text-anchor="middle" font-size="10">Conv 3×3</text>
+                <text x="360" y="135" text-anchor="middle" font-size="10">512→256→128→2</text>
+                <text x="360" y="150" text-anchor="middle" font-size="10">2×16×16</text>
+                
+                <!-- 上采样 -->
+                <rect x="460" y="85" width="120" height="80" fill="#fff3e0" stroke="#000" stroke-width="1"/>
+                <text x="520" y="110" text-anchor="middle" font-size="12">Upsample</text>
+                <text x="520" y="125" text-anchor="middle" font-size="10">Bilinear ×32</text>
+                <text x="520" y="145" text-anchor="middle" font-size="10">2×512×512</text>
+                
+                <!-- 输出 -->
+                <rect x="620" y="100" width="80" height="50" fill="#e8e8e8" stroke="#000" stroke-width="1"/>
+                <text x="660" y="130" text-anchor="middle" font-size="12">Output</text>
+                <text x="660" y="145" text-anchor="middle" font-size="10">2×512×512</text>
+                
+                <!-- 箭头 -->
+                <path d="M 100 125 L 140 125" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <path d="M 260 125 L 300 125" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <path d="M 420 125 L 460 125" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)"/>
+                <path d="M 580 125 L 620 125" stroke="#000" stroke-width="2" marker-end="url(#arrowhead)"/>
+                
+                <!-- 损失函数 -->
+                <rect x="300" y="190" width="120" height="30" fill="#ffebee" stroke="#000" stroke-width="1" stroke-dasharray="5,5"/>
+                <text x="360" y="210" text-anchor="middle" font-size="11">CrossEntropy Loss</text>
+                <path d="M 360 165 L 360 190" stroke="#000" stroke-width="1" stroke-dasharray="3,3"/>
+                
+                <!-- 定义箭头 -->
+                <defs>
+                    <marker id="arrowhead" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                        <polygon points="0 0, 10 5, 0 10" fill="#000"/>
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+        
+        <!-- Model (b): ResNet18 + Focal Loss -->
+        <div class="model-container">
+            <div class="model-label">(b) ResNet18 + Focal Loss</div>
+            <svg viewBox="0 0 800 250">
+                <!-- 架构同(a)，仅损失函数不同 -->
+                <rect x="20" y="100" width="80" height="50" fill="#e8e8e8" stroke="#000" stroke-width="1"/>
+                <text x="60" y="130" text-anchor="middle" font-size="12">Input</text>
+                <text x="60" y="145" text-anchor="middle" font-size="10">3×512×512</text>
+                
+                <rect x="140" y="85" width="120" height="80" fill="#b8d4f1" stroke="#000" stroke-width="1"/>
+                <text x="200" y="110" text-anchor="middle" font-size="12">ResNet18</text>
+                <text x="200" y="125" text-anchor="middle" font-size="10">Encoder</text>
+                <text x="200" y="140" text-anchor="middle" font-size="9">(Pretrained)</text>
+                <text x="200" y="155" text-anchor="middle" font-size="10">512×16×16</text>
+                
+                <rect x="300" y="85" width="120" height="80" fill="#c8e6c9" stroke="#000" stroke-width="1"/>
+                <text x="360" y="105" text-anchor="middle" font-size="12">Seg Head</text>
+                <text x="360" y="120" text-anchor="middle" font-size="10">Conv 3×3</text>
+                <text x="360" y="135" text-anchor="middle" font-size="10">512→256→128→2</text>
+                <text x="360" y="150" text-anchor="middle" font-size="10">2×16×16</text>
+                
+                <rect x="460" y="85" width="120" height="80" fill="#fff3e0" stroke="#000" stroke-width="1"/>
+                <text x="520" y="110" text-anchor="middle" font-size="12">Upsample</text>
+                <text x="520" y="125" text-anchor="middle" font-size="10">Bilinear ×32</text>
+                <text x="520" y="145" text-anchor="middle" font-size="10">2×512×512</text>
+                
+                <rect x="620" y="100" width="80" height="50" fill="#e8e8e8" stroke="#000" stroke-width="1"/>
+                <text x="660" y="130" text-anchor="middle" font-size="12">Output</text>
+                <text x="660" y="145" text-anchor="middle" font-size="10">2×512×512</text>
+                
+                <path d="M 100 125 L 140 125" stroke="#000" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <path d="M 260 125 L 300 125" stroke="#000" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <path d="M 420 125 L 460 125" stroke="#000" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                <path d="M 580 125 L 620 125" stroke="#000" stroke-width="2" marker-end="url(#arrowhead2)"/>
+                
+                <!-- Focal Loss -->
+                <rect x="300" y="190" width="120" height="40" fill="#ffe0b2" stroke="#000" stroke-width="1" stroke-dasharray="5,5"/>
+                <text x="360" y="205" text-anchor="middle" font-size="11">Focal Loss</text>
+                <text x="360" y="220" text-anchor="middle" font-size="9">α=[0.25,0.75], γ=2</text>
+                <path d="M 360 165 L 360 190" stroke="#000" stroke-width="1" stroke-dasharray="3,3"/>
+                
+                <defs>
+                    <marker id="arrowhead2" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                        <polygon points="0 0, 10 5, 0 10" fill="#000"/>
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+        
+        <!-- Model (c): ResNet18 + Skip Connections -->
+        <div class="model-container">
+            <div class="model-label">(c) ResNet18 + Skip Connections</div>
+            <svg viewBox="0 0 900 350">
+                <!-- 输入 -->
+                <rect x="20" y="150" width="80" height="50" fill="#e8e8e8" stroke="#000" stroke-width="1"/>
+                <text x="60" y="180" text-anchor="middle" font-size="12">Input</text>
+                <text x="60" y="195" text-anchor="middle" font-size="10">3×512×512</text>
+                
+                <!-- 编码器路径 -->
+                <g id="encoder-path">
+                    <rect x="140" y="50" width="80" height="40" fill="#b8d4f1" stroke="#000" stroke-width="1"/>
+                    <text x="180" y="75" text-anchor="middle" font-size="10">Conv+Pool</text>
+                    
+                    <rect x="140" y="100" width="80" height="40" fill="#b8d4f1" stroke="#000" stroke-width="1"/>
+                    <text x="180" y="120" text-anchor="middle" font-size="10">Layer1</text>
+                    <text x="180" y="132" text-anchor="middle" font-size="9">64×128×128</text>
+                    
+                    <rect x="140" y="150" width="80" height="40" fill="#b8d4f1" stroke="#000" stroke-width="1"/>
+                    <text x="180" y="170" text-anchor="middle" font-size="10">Layer2</text>
+                    <text x="180" y="182" text-anchor="middle" font-size="9">128×64×64</text>
+                    
+                    <rect x="140" y="200" width="80" height="40" fill="#b8d4f1" stroke="#000" stroke-width="1"/>
+                    <text x="180" y="220" text-anchor="middle" font-size="10">Layer3</text>
+                    <text x="180" y="232" text-anchor="middle" font-size="9">256×32×32</text>
+                    
+                    <rect x="140" y="250" width="80" height="40" fill="#b8d4f1" stroke="#000" stroke-width="1"/>
+                    <text x="180" y="270" text-anchor="middle" font-size="10">Layer4</text>
+                    <text x="180" y="282" text-anchor="middle" font-size="9">512×16×16</text>
+                </g>
+                
+                <!-- 解码器路径 -->
+                <g id="decoder-path">
+                    <rect x="480" y="250" width="80" height="40" fill="#c8e6c9" stroke="#000" stroke-width="1"/>
+                    <text x="520" y="270" text-anchor="middle" font-size="10">Decoder4</text>
+                    <text x="520" y="282" text-anchor="middle" font-size="9">256×16×16</text>
+                    
+                    <rect x="480" y="200" width="80" height="40" fill="#c8e6c9" stroke="#000" stroke-width="1"/>
+                    <text x="520" y="220" text-anchor="middle" font-size="10">Decoder3</text>
+                    <text x="520" y="232" text-anchor="middle" font-size="9">128×32×32</text>
+                    
+                    <rect x="480" y="150" width="80" height="40" fill="#c8e6c9" stroke="#000" stroke-width="1"/>
+                    <text x="520" y="170" text-anchor="middle" font-size="10">Decoder2</text>
+                    <text x="520" y="182" text-anchor="middle" font-size="9">64×64×64</text>
+                    
+                    <rect x="480" y="100" width="80" height="40" fill="#c8e6c9" stroke="#000" stroke-width="1"/>
+                    <text x="520" y="120" text-anchor="middle" font-size="10">Decoder1</text>
+                    <text x="520" y="132" text-anchor="middle" font-size="9">64×128×128</text>
+                </g>
+                
+                <!-- Skip connections -->
+                <path d="M 220 120 L 480 120" stroke="#ff5722" stroke-width="2" stroke-dasharray="5,5"/>
+                <path d="M 220 170 L 480 170" stroke="#ff5722" stroke-width="2" stroke-dasharray="5,5"/>
+                <path d="M 220 220 L 480 220" stroke="#ff5722" stroke-width="2" stroke-dasharray="5,5"/>
+                <path d="M 220 270 L 480 270" stroke="#ff5722" stroke-width="2" stroke-dasharray="5,5"/>
+                
+                <!-- Skip标签 -->
+                <text x="350" y="115" text-anchor="middle" font-size="9" fill="#ff5722">skip connection</text>
+                <text x="350" y="165" text-anchor="middle" font-size="9" fill="#ff5722">skip connection</text>
+                <text x="350" y="215" text-anchor="middle" font-size="9" fill="#ff5722">skip connection</text>
+                <text x="350" y="265" text-anchor="middle" font-size="9" fill="#ff5722">skip connection</text>
+                
+                <!-- 输出处理 -->
+                <rect x="600" y="100" width="80" height="40" fill="#fff3e0" stroke="#000" stroke-width="1"/>
+                <text x="640" y="120" text-anchor="middle" font-size="10">Conv 1×1</text>
+                <text x="640" y="132" text-anchor="middle" font-size="9">64→2</text>
+                
+                <rect x="600" y="160" width="80" height="40" fill="#fff3e0" stroke="#000" stroke-width="1"/>
+                <text x="640" y="180" text-anchor="middle" font-size="10">Upsample ×4</text>
+                <text x="640" y="192" text-anchor="middle" font-size="9">2×512×512</text>
+                
+                <!-- 输出 -->
+                <rect x="720" y="150" width="80" height="50" fill="#e8e8e8" stroke="#000" stroke-width="1"/>
+                <text x="760" y="180" text-anchor="middle" font-size="12">Output</text>
+                <text x="760" y="195" text-anchor="middle" font-size="10">2×512×512</text>
+                
+                <!-- 主要连接箭头 -->
+                <path d="M 100 175 L 140 70" stroke="#000" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                <path d="M 180 90 L 180 100" stroke="#000" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                <path d="M 180 140 L 180 150" stroke="#000" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                <path d="M 180 190 L 180 200" stroke="#000" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                <path d="M 180 240 L 180 250" stroke="#000" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                
+                <path d="M 220 270 L 480 270" stroke="#000" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                <path d="M 520 250 L 520 240" stroke="#000" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                <path d="M 520 200 L 520 190" stroke="#000" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                <path d="M 520 150 L 520 140" stroke="#000" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                <path d="M 560 120 L 600 120" stroke="#000" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                <path d="M 640 140 L 640 160" stroke="#000" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                <path d="M 680 180 L 720 180" stroke="#000" stroke-width="2" marker-end="url(#arrowhead3)"/>
+                
+                <defs>
+                    <marker id="arrowhead3" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                        <polygon points="0 0, 10 5, 0 10" fill="#000"/>
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+        
+        <!-- Model (d): Full Improved -->
+        <div class="model-container">
+            <div class="model-label">(d) Full Improved (Skip + Dropout + Deep Supervision + Focal Loss)</div>
+            <svg viewBox="0 0 900 400">
+                <!-- 基本结构类似(c)，添加额外组件 -->
+                <rect x="20" y="180" width="80" height="50" fill="#e8e8e8" stroke="#000" stroke-width="1"/>
+                <text x="60" y="210" text-anchor="middle" font-size="12">Input</text>
+                <text x="60" y="225" text-anchor="middle" font-size="10">3×512×512</text>
+                
+                <!-- 编码器（同Skip） -->
+                <g id="encoder-improved">
+                    <rect x="140" y="80" width="80" height="40" fill="#b8d4f1" stroke="#000" stroke-width="1"/>
+                    <text x="180" y="105" text-anchor="middle" font-size="10">Conv+Pool</text>
+                    
+                    <rect x="140" y="130" width="80" height="40" fill="#b8d4f1" stroke="#000" stroke-width="1"/>
+                    <text x="180" y="150" text-anchor="middle" font-size="10">Layer1</text>
+                    <text x="180" y="162" text-anchor="middle" font-size="9">64×128×128</text>
+                    
+                    <rect x="140" y="180" width="80" height="40" fill="#b8d4f1" stroke="#000" stroke-width="1"/>
+                    <text x="180" y="200" text-anchor="middle" font-size="10">Layer2</text>
+                    <text x="180" y="212" text-anchor="middle" font-size="9">128×64×64</text>
+                    
+                    <rect x="140" y="230" width="80" height="40" fill="#b8d4f1" stroke="#000" stroke-width="1"/>
+                    <text x="180" y="250" text-anchor="middle" font-size="10">Layer3</text>
+                    <text x="180" y="262" text-anchor="middle" font-size="9">256×32×32</text>
+                    
+                    <rect x="140" y="280" width="80" height="40" fill="#b8d4f1" stroke="#000" stroke-width="1"/>
+                    <text x="180" y="300" text-anchor="middle" font-size="10">Layer4</text>
+                    <text x="180" y="312" text-anchor="middle" font-size="9">512×16×16</text>
+                </g>
+                
+                <!-- 解码器（带Dropout标记） -->
+                <g id="decoder-improved">
+                    <rect x="480" y="280" width="80" height="40" fill="#c8e6c9" stroke="#000" stroke-width="1"/>
+                    <text x="520" y="295" text-anchor="middle" font-size="10">Decoder4</text>
+                    <text x="520" y="307" text-anchor="middle" font-size="9">+Drop(0.1)</text>
+                    <text x="520" y="315" text-anchor="middle" font-size="8">256×16×16</text>
+                    
+                    <rect x="480" y="230" width="80" height="40" fill="#c8e6c9" stroke="#000" stroke-width="1"/>
+                    <text x="520" y="245" text-anchor="middle" font-size="10">Decoder3</text>
+                    <text x="520" y="257" text-anchor="middle" font-size="9">+Drop(0.1)</text>
+                    <text x="520" y="265" text-anchor="middle" font-size="8">128×32×32</text>
+                    
+                    <rect x="480" y="180" width="80" height="40" fill="#ffc107" stroke="#000" stroke-width="2"/>
+                    <text x="520" y="195" text-anchor="middle" font-size="10">Decoder2</text>
+                    <text x="520" y="207" text-anchor="middle" font-size="9">+Drop(0.1)</text>
+                    <text x="520" y="215" text-anchor="middle" font-size="8">64×64×64</text>
+                    
+                    <rect x="480" y="130" width="80" height="40" fill="#c8e6c9" stroke="#000" stroke-width="1"/>
+                    <text x="520" y="145" text-anchor="middle" font-size="10">Decoder1</text>
+                    <text x="520" y="157" text-anchor="middle" font-size="9">+Drop(0.05)</text>
+                    <text x="520" y="165" text-anchor="middle" font-size="8">64×128×128</text>
+                </g>
+                
+                <!-- Skip connections -->
+                <path d="M 220 150 L 480 150" stroke="#ff5722" stroke-width="2" stroke-dasharray="5,5"/>
+                <path d="M 220 200 L 480 200" stroke="#ff5722" stroke-width="2" stroke-dasharray="5,5"/>
+                <path d="M 220 250 L 480 250" stroke="#ff5722" stroke-width="2" stroke-dasharray="5,5"/>
+                <path d="M 220 300 L 480 300" stroke="#ff5722" stroke-width="2" stroke-dasharray="5,5"/>
+                
+                <!-- 辅助输出 (Deep Supervision) -->
+                <rect x="600" y="180" width="80" height="40" fill="#ffc107" stroke="#000" stroke-width="2"/>
+                <text x="640" y="195" text-anchor="middle" font-size="10">Aux Head</text>
+                <text x="640" y="207" text-anchor="middle" font-size="9">Conv 1×1</text>
+                <text x="640" y="215" text-anchor="middle" font-size="8">64→2</text>
+                
+                <!-- 主输出 -->
+                <rect x="600" y="130" width="80" height="40" fill="#fff3e0" stroke="#000" stroke-width="1"/>
+                <text x="640" y="150" text-anchor="middle" font-size="10">Main Head</text>
+                <text x="640" y="162" text-anchor="middle" font-size="9">64→2</text>
+                
+                <!-- 输出 -->
+                <rect x="720" y="180" width="80" height="50" fill="#e8e8e8" stroke="#000" stroke-width="1"/>
+                <text x="760" y="210" text-anchor="middle" font-size="12">Output</text>
+                <text x="760" y="225" text-anchor="middle" font-size="10">2×512×512</text>
+                
+                <!-- 损失组合 -->
+                <rect x="480" y="340" width="200" height="40" fill="#ffe0b2" stroke="#000" stroke-width="1" stroke-dasharray="5,5"/>
+                <text x="580" y="355" text-anchor="middle" font-size="11">Combined Loss</text>
+                <text x="580" y="370" text-anchor="middle" font-size="9">0.6×Main + 0.4×Aux (Focal Loss)</text>
+                
+                <!-- 深度监督连接 -->
+                <path d="M 560 200 L 600 200" stroke="#ffc107" stroke-width="2"/>
+                <path d="M 640 220 L 640 340" stroke="#ffc107" stroke-width="1" stroke-dasharray="3,3"/>
+                <path d="M 640 170 L 640 340" stroke="#000" stroke-width="1" stroke-dasharray="3,3"/>
+                
+                <!-- 主要流程箭头 -->
+                <path d="M 100 205 L 140 100" stroke="#000" stroke-width="2" marker-end="url(#arrowhead4)"/>
+                <path d="M 560 150 L 600 150" stroke="#000" stroke-width="2" marker-end="url(#arrowhead4)"/>
+                <path d="M 680 150 L 720 195" stroke="#000" stroke-width="2" marker-end="url(#arrowhead4)"/>
+                <path d="M 680 200 L 720 205" stroke="#ffc107" stroke-width="2" marker-end="url(#arrowhead4)"/>
+                
+                <defs>
+                    <marker id="arrowhead4" markerWidth="10" markerHeight="10" refX="9" refY="5" orient="auto">
+                        <polygon points="0 0, 10 5, 0 10" fill="#000"/>
+                    </marker>
+                </defs>
+            </svg>
+        </div>
+        
+        <!-- 图例 -->
+        <div class="legend">
+            <div class="legend-item">
+                <div class="legend-box" style="background:#b8d4f1;"></div>
+                <span>Encoder</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background:#c8e6c9;"></div>
+                <span>Decoder</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background:#fff3e0;"></div>
+                <span>Feature Processing</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background:#ffc107;"></div>
+                <span>Deep Supervision</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background:#ffe0b2;"></div>
+                <span>Loss Function</span>
+            </div>
+            <div class="legend-item">
+                <div class="legend-box" style="background:none; border-style:dashed; border-color:#ff5722;"></div>
+                <span>Skip Connection</span>
+            </div>
+        </div>
+        
+        <div style="margin-top: 30px; font-size: 12px; text-align: center;">
+            <strong>Table 1.</strong> Architecture comparison of baseline models. All models use 512×512 input images and output 2-channel segmentation maps.
+        </div>
+    </div>
+</body>
+</html>
