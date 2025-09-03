@@ -1,0 +1,110 @@
+===== autodl_config.txt =====
+# AutoDL实例配置信息
+# 请根据你的AutoDL实例信息修改以下配置
+
+# AutoDL实例连接信息
+AUTODL_HOST=your-instance.autodl.com
+AUTODL_PORT=your-ssh-port  
+AUTODL_USER=root
+
+# 示例配置（请替换为你的实际信息）
+# AUTODL_HOST=region-1.autodl.com
+# AUTODL_PORT=12345
+# AUTODL_USER=root
+
+# 获取连接信息的步骤：
+# 1. 登录AutoDL控制台 (https://www.autodl.com/)
+# 2. 启动你的实例
+# 3. 在实例详情页面找到SSH连接信息
+# 4. 复制主机地址和端口号到上面的配置中
+
+===== 项目目录结构 =====
+BA-segmentation/
+├── .vscode/                    # VS Code配置
+│   ├── settings.json          # 项目设置
+│   ├── tasks.json             # 任务配置（同步、训练等）
+│   └── launch.json            # 调试配置
+├── sync_scripts/              # 同步脚本
+│   ├── autodl_config.txt      # AutoDL连接配置
+│   ├── upload_to_autodl.bat   # 上传代码脚本
+│   ├── download_results.bat   # 下载结果脚本
+│   └── quick_sync.bat         # 快速同步脚本
+├── scripts/                   # 工具脚本
+│   └── train_on_autodl.py     # AutoDL训练脚本
+├── data_samples/              # 小样本数据（本地调试用）
+├── results/                   # 训练结果（从AutoDL下载）
+├── logs/                      # 训练日志
+├── venv/                      # 本地Python环境
+├── autodl_setup.sh            # AutoDL环境设置脚本
+├── requirements.txt           # Python依赖
+├── .gitignore                 # Git忽略文件
+└── *.py                       # 你的Python代码
+
+===== 使用流程 =====
+
+【第一次设置】
+1. 在AutoDL控制台创建实例并启动
+2. 获取SSH连接信息，更新 sync_scripts/autodl_config.txt
+3. 在VS Code中按 Ctrl+Shift+P，运行任务 "📝 Edit AutoDL Config"
+4. 运行任务 "2️⃣ Full Sync to AutoDL" 首次同步代码
+5. 运行任务 "3️⃣ SSH to AutoDL" 连接到服务器
+6. 在AutoDL上运行: bash autodl_setup.sh
+
+【日常开发流程】
+1. 本地编写代码并测试
+2. 提交到GitHub: git add . && git commit -m "message" && git push
+3. 同步到AutoDL: 运行任务 "1️⃣ Quick Sync to AutoDL"
+4. 开始训练: 运行任务 "4️⃣ Start Training on AutoDL"
+5. 查看状态: 运行任务 "5️⃣ Check Training Status"
+6. 下载结果: 运行任务 "6️⃣ Download Results"
+
+【常用VS Code快捷操作】
+- Ctrl+Shift+P → Tasks: Run Task → 选择需要的任务
+- F5: 本地调试当前Python文件
+- Ctrl+`: 打开终端
+- Ctrl+Shift+G: 查看Git状态
+
+===== AutoDL使用技巧 =====
+
+【实例管理】
+- 训练完成后及时关闭实例节省费用
+- 使用数据盘存储大文件，避免重复上传
+- 选择合适的GPU型号，平衡性能和成本
+
+【训练最佳实践】
+- 使用screen或tmux运行长时间任务，防止连接断开
+- 定期保存检查点，支持断点续训
+- 监控GPU使用率和内存占用
+- 设置合理的日志记录
+
+【数据管理】
+- 大数据集直接在AutoDL上下载，不要从本地上传
+- 使用AutoDL的数据集功能
+- 结果文件及时下载到本地备份
+
+【成本优化】
+- 开发和调试在本地完成，只在AutoDL上进行最终训练
+- 选择按量计费或包时优惠
+- 关注实例状态，避免忘记关机
+
+===== 故障排除 =====
+
+【SSH连接失败】
+- 检查AutoDL实例是否正在运行
+- 验证SSH端口和主机地址是否正确
+- 确认本地网络连接正常
+
+【文件同步失败】
+- 确保已安装Git Bash或WSL（Windows用户）
+- 检查rsync命令是否可用
+- 验证SSH密钥配置是否正确
+
+【训练异常】
+- 检查GPU内存是否足够
+- 查看详细错误日志
+- 确认Python环境和依赖是否正确安装
+
+【VS Code任务无法运行】
+- 检查PowerShell执行策略设置
+- 确认所有脚本文件路径正确
+- 查看任务输出的详细错误信息

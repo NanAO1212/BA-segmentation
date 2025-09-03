@@ -1,0 +1,238 @@
+// .vscode/tasks.json - Windows版AutoDL工作流
+{
+    "version": "2.0.0",
+    "tasks": [
+        {
+            "label": "📝 Edit AutoDL Config",
+            "type": "shell",
+            "command": "notepad",
+            "args": ["sync_scripts/autodl_config.txt"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "1️⃣ Quick Sync to AutoDL",
+            "type": "shell", 
+            "command": "cmd",
+            "args": ["/c", "sync_scripts\\quick_sync.bat"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "2️⃣ Full Sync to AutoDL",
+            "type": "shell",
+            "command": "cmd", 
+            "args": ["/c", "sync_scripts\\upload_to_autodl.bat"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "3️⃣ SSH to AutoDL",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "ssh root@your-instance.autodl.com -p your-ssh-port"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": true,
+                "panel": "new"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "4️⃣ Start Training on AutoDL",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-Command", 
+                "ssh root@your-instance.autodl.com -p your-ssh-port 'cd ~/BA-segmentation && source venv/bin/activate && screen -dmS training python scripts/train.py && echo Training started in screen session'"
+            ],
+            "group": "build", 
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "5️⃣ Check Training Status",
+            "type": "shell",
+            "command": "powershell", 
+            "args": [
+                "-Command",
+                "ssh root@your-instance.autodl.com -p your-ssh-port 'screen -ls && echo && tail -20 ~/BA-segmentation/logs/train_*.log'"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "6️⃣ Download Results",
+            "type": "shell",
+            "command": "cmd",
+            "args": ["/c", "sync_scripts\\download_results.bat"],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always", 
+                "focus": false,
+                "panel": "shared"
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "7️⃣ View GPU Status",
+            "type": "shell",
+            "command": "powershell",
+            "args": [
+                "-Command",
+                "ssh root@your-instance.autodl.com -p your-ssh-port 'nvidia-smi'"
+            ],
+            "group": "test",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"  
+            },
+            "problemMatcher": []
+        },
+        {
+            "label": "🚀 Complete Training Workflow",
+            "dependsOrder": "sequence",
+            "dependsOn": [
+                "2️⃣ Full Sync to AutoDL",
+                "4️⃣ Start Training on AutoDL"
+            ],
+            "group": "build",
+            "presentation": {
+                "echo": true,
+                "reveal": "always",
+                "focus": false,
+                "panel": "shared"
+            }
+        }
+    ]
+}
+
+// .vscode/launch.json - 调试配置
+{
+    "version": "0.2.0", 
+    "configurations": [
+        {
+            "name": "🐍 Debug Current File",
+            "type": "python",
+            "request": "launch",
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "🧪 Debug with Sample Data",
+            "type": "python",
+            "request": "launch", 
+            "program": "${file}",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}",
+                "USE_SAMPLE_DATA": "1"
+            },
+            "justMyCode": false
+        },
+        {
+            "name": "🎯 ResNet Training Debug",
+            "type": "python",
+            "request": "launch",
+            "program": "baseline_training.py",
+            "console": "integratedTerminal",
+            "cwd": "${workspaceFolder}",
+            "args": ["--debug", "--epochs", "2", "--batch-size", "4"],
+            "env": {
+                "PYTHONPATH": "${workspaceFolder}"
+            }
+        }
+    ]
+}
+
+// .vscode/settings.json - 项目设置
+{
+    "python.defaultInterpreterPath": "./venv/Scripts/python.exe",
+    "python.terminal.activateEnvironment": true,
+    
+    // 格式化设置
+    "python.formatting.provider": "black",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "editor.formatOnSave": true,
+    
+    // 文件排除（避免上传大文件）
+    "files.exclude": {
+        "**/data": true,
+        "**/results": true,
+        "**/checkpoints": true, 
+        "**/__pycache__": true,
+        "**/*.pth": true,
+        "**/*.pkl": true,
+        "**/logs": true
+    },
+    
+    // 搜索排除
+    "search.exclude": {
+        "**/venv": true,
+        "**/data": true,
+        "**/results": true,
+        "**/__pycache__": true
+    },
+    
+    // 终端设置
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.cwd": "${workspaceFolder}",
+    
+    // AutoDL特定设置
+    "remote.SSH.configFile": "${userHome}/.ssh/config",
+    "remote.SSH.showLoginTerminal": true,
+    
+    // 编辑器增强
+    "editor.rulers": [80, 100],
+    "editor.tabSize": 4,
+    "files.autoSave": "afterDelay",
+    "files.autoSaveDelay": 1000,
+    
+    // 代码智能提示
+    "python.analysis.autoImportCompletions": true,
+    "python.analysis.typeCheckingMode": "basic"
+}

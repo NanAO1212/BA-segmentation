@@ -1,0 +1,56 @@
+{
+    // 保留你的现有个人设置
+    "jupyter.widgetScriptSources": [
+        "jsdelivr.com",
+        "unpkg.com"
+    ],
+    "workbench.colorTheme": "Visual Studio Light",
+    "files.autoSave": "afterDelay",
+    "remote.SSH.remotePlatform": {
+        "connect.bjb1.seetacloud.com": "linux",
+        "connect.westc.gpuhub.com": "linux",
+        "connect.nmb1.seetacloud.com": "linux"
+    },
+    "explorer.confirmDelete": false,
+    "window.customTitleBarVisibility": "windowed",
+    "workbench.editor.showTabs": "single",
+    "editor.fontSize": 12,
+    "workbench.startupEditor": "none",
+    "editor.accessibilitySupport": "on",
+    "python.analysis.typeCheckingMode": "standard",
+    "settingsSync.ignoredExtensions": [],
+
+    // BA项目特定设置
+    "python.defaultInterpreterPath": "./venv/Scripts/python.exe",
+    "python.terminal.activateEnvironment": true,
+    "python.formatting.provider": "black",
+    "python.linting.enabled": true,
+    "python.linting.flake8Enabled": true,
+    "editor.formatOnSave": true,
+    "editor.rulers": [80, 88, 120],
+    "editor.tabSize": 4,
+    "files.trimTrailingWhitespace": true,
+    "files.insertFinalNewline": true,
+    
+    // 排除大文件（避免误同步）
+    "files.exclude": {
+        "**/data": true,
+        "**/results": true,
+        "**/checkpoints": true,
+        "**/__pycache__": true,
+        "**/*.pth": true,
+        "**/*.pkl": true,
+        "**/logs": true,
+        "**/venv": true
+    },
+    
+    "search.exclude": {
+        "**/venv": true,
+        "**/data": true,
+        "**/results": true,
+        "**/__pycache__": true
+    },
+    
+    "terminal.integrated.defaultProfile.windows": "PowerShell",
+    "terminal.integrated.cwd": "${workspaceFolder}"
+}
