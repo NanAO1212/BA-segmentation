@@ -1,9 +1,9 @@
 @echo off
 echo ⚡ 快速同步Python文件到AutoDL...
 
-set AUTODL_HOST=your-instance.autodl.com
-set AUTODL_PORT=your-ssh-port
-set AUTODL_USER=root
+set AUTODL_HOST=connect.nmb1.seetacloud.com
+set AUTODL_PORT=47187
+set AUTODL_USER=rootP
 
 REM 只同步Python文件和配置文件
 rsync -avz --progress ^

@@ -1,18 +1,13 @@
-# AutoDL实例配置信息
-# 请根据你的AutoDL实例信息修改以下配置
+﻿# AutoDL实例配置信息
+# 请根据你的SeetaCloud实例信息修改以下配置
 
-# AutoDL实例连接信息（需要修改为你的实际信息）
-AUTODL_HOST=your-instance.autodl.com
-AUTODL_PORT=your-ssh-port
+# SeetaCloud实例连接信息
+AUTODL_HOST=connect.nmb1.seetacloud.com
+AUTODL_PORT=47187
 AUTODL_USER=root
 
 # 获取连接信息的步骤：
-# 1. 登录AutoDL控制台 (https://www.autodl.com/)
-# 2. 启动你的实例
+# 1. 登录SeetaCloud控制台
+# 2. 启动你的实例  
 # 3. 在实例详情页面找到SSH连接信息
-# 4. 复制主机地址和端口号替换上面的配置
-
-# 示例（请替换为你的真实信息）：
-# AUTODL_HOST=region-3.autodl.com  
-# AUTODL_PORT=25684
-# AUTODL_USER=root
+# 4. 复制主机地址和端口号到上面的配置中

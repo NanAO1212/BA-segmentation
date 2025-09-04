@@ -2,7 +2,7 @@
     "version": "2.0.0",
     "tasks": [
         {
-            "label": "📝 编辑AutoDL配置",
+            "label": "编辑AutoDL配置",
             "type": "shell",
             "command": "notepad",
             "args": ["sync_scripts\\autodl_config.txt"],
@@ -15,59 +15,23 @@
             }
         },
         {
-            "label": "🔧 激活Conda环境",
-            "type": "shell",
-            "command": "conda",
-            "args": ["activate", "torch-env"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "📋 生成requirements.txt",
+            "label": "SSH连接到SeetaCloud",
             "type": "shell",
             "command": "powershell",
-            "args": ["-Command", "conda activate torch-env; pip freeze > requirements.txt; echo '✅ Requirements generated'; type requirements.txt"],
+            "args": [
+                "-Command",
+                "ssh -p 47187 root@connect.nmb1.seetacloud.com"
+            ],
             "group": "build",
             "presentation": {
                 "echo": true,
                 "reveal": "always",
-                "focus": false,
-                "panel": "shared"
+                "focus": true,
+                "panel": "new"
             }
         },
         {
-            "label": "📦 检查当前环境",
-            "type": "shell",
-            "command": "powershell",
-            "args": ["-Command", "conda activate torch-env; python --version; conda list torch; pip list | findstr torch"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "1️⃣ 快速同步到AutoDL",
-            "type": "shell",
-            "command": "cmd",
-            "args": ["/c", "sync_scripts\\quick_sync.bat"],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "2️⃣ 完整同步到AutoDL",
+            "label": "完整同步到SeetaCloud",
             "type": "shell",
             "command": "cmd",
             "args": ["/c", "sync_scripts\\upload_to_autodl.bat"],
@@ -80,29 +44,10 @@
             }
         },
         {
-            "label": "3️⃣ SSH连接到AutoDL",
+            "label": "快速同步到SeetaCloud",
             "type": "shell",
-            "command": "powershell",
-            "args": [
-                "-Command",
-                "ssh root@your-instance.autodl.com -p your-ssh-port"
-            ],
-            "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": true,
-                "panel": "new"
-            }
-        },
-        {
-            "label": "4️⃣ 在AutoDL上开始训练",
-            "type": "shell",
-            "command": "powershell",
-            "args": [
-                "-Command",
-                "ssh root@your-instance.autodl.com -p your-ssh-port \"cd ~/BA-segmentation && conda activate torch-env && screen -dmS training python baseline_training.py && echo '✅ Training started in screen session'\""
-            ],
+            "command": "cmd",
+            "args": ["/c", "sync_scripts\\quick_sync.bat"],
             "group": "build",
             "presentation": {
                 "echo": true,
@@ -112,43 +57,11 @@
             }
         },
         {
-            "label": "5️⃣ 检查训练状态",
-            "type": "shell",
-            "command": "powershell",
-            "args": [
-                "-Command",
-                "ssh root@your-instance.autodl.com -p your-ssh-port \"conda activate torch-env && screen -ls && echo && tail -20 ~/BA-segmentation/logs/train_*.log\""
-            ],
-            "group": "test",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "6️⃣ 下载训练结果",
+            "label": "下载训练结果",
             "type": "shell",
             "command": "cmd",
             "args": ["/c", "sync_scripts\\download_results.bat"],
             "group": "build",
-            "presentation": {
-                "echo": true,
-                "reveal": "always",
-                "focus": false,
-                "panel": "shared"
-            }
-        },
-        {
-            "label": "7️⃣ 查看GPU状态",
-            "type": "shell",
-            "command": "powershell",
-            "args": [
-                "-Command",
-                "ssh root@your-instance.autodl.com -p your-ssh-port \"nvidia-smi\""
-            ],
-            "group": "test",
             "presentation": {
                 "echo": true,
                 "reveal": "always",

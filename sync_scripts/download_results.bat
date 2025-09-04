@@ -1,8 +1,8 @@
 @echo off
 echo 📥 正在从AutoDL下载训练结果...
 
-set AUTODL_HOST=your-instance.autodl.com
-set AUTODL_PORT=your-ssh-port
+set AUTODL_HOST=connect.nmb1.seetacloud.com
+set AUTODL_PORT=47187
 set AUTODL_USER=root
 
 REM 创建本地结果目录

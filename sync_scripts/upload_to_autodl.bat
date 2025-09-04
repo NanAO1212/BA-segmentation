@@ -2,8 +2,8 @@
 echo 🚀 正在同步代码到AutoDL...
 
 REM 设置AutoDL连接信息 - 需要替换为你的实际信息
-set AUTODL_HOST=your-instance.autodl.com
-set AUTODL_PORT=your-ssh-port
+set AUTODL_HOST=connect.nmb1.seetacloud.com
+set AUTODL_PORT=47187
 set AUTODL_USER=root
 
 REM 使用rsync同步代码 (需要安装Git Bash或WSL)
