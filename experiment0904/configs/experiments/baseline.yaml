@@ -1,0 +1,37 @@
+# 基线实验配置
+exp_name: baseline_comparison
+model_name: vanilla_resnet18
+seed: 42
+
+# 数据配置
+train_dir: ../data_samples/Train
+test_dir: ../data_samples/Test
+img_size: 512
+val_split: 0.2
+num_workers: 2
+
+# 训练配置
+epochs: 20
+lr: 1.0e-4
+weight_decay: 5.0e-4
+validate_every: 2
+
+# 学习率调度
+scheduler: CosineAnnealingLR
+T_max: 100
+eta_min: 1.0e-6
+warmup_epochs: 3
+
+# 早停
+early_stop: true
+patience: 15
+min_delta: 0.001
+
+# 硬件
+device: cuda
+use_amp: false
+
+# 路径
+checkpoint_dir: checkpoints
+log_dir: logs
+result_dir: results

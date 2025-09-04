@@ -1,0 +1,21 @@
+# 测试配置
+from config import Config, get_model_config
+
+# 加载配置
+cfg = Config.from_yaml('config/experiments/baseline.yaml')
+print(cfg)
+
+# 更新配置
+cfg.update(batch_size=32, epochs=100)
+
+# 获取模型配置
+model_cfg = get_model_config('resnet18_focal')
+print(model_cfg)
+
+# 测试数据加载
+from data import create_dataloaders
+
+train_loader, val_loader = create_dataloaders(cfg)
+for images, masks in train_loader:
+    print(f"Images: {images.shape}, Masks: {masks.shape}")
+    break
