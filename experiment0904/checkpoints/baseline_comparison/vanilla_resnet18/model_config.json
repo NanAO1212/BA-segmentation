@@ -1,0 +1,6 @@
+{
+  "use_skip_connections": false,
+  "use_focal_loss": false,
+  "use_deep_supervision": false,
+  "use_dropout": false
+}

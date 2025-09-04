@@ -1,0 +1,18 @@
+{
+  "vanilla_resnet18": {
+    "status": "failed",
+    "error": "Images directory not found: ..\\data\\Train\\Images"
+  },
+  "resnet18_focal": {
+    "status": "failed",
+    "error": "Images directory not found: ..\\data\\Train\\Images"
+  },
+  "resnet18_skip": {
+    "status": "failed",
+    "error": "Images directory not found: ..\\data\\Train\\Images"
+  },
+  "full_improved": {
+    "status": "failed",
+    "error": "Images directory not found: ..\\data\\Train\\Images"
+  }
+}

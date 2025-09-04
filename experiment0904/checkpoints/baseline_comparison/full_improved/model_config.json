@@ -1,0 +1,18 @@
+{
+  "use_skip_connections": true,
+  "use_focal_loss": true,
+  "focal_alpha": [
+    0.25,
+    0.75
+  ],
+  "focal_gamma": 2.0,
+  "use_deep_supervision": true,
+  "aux_loss_weight": 0.4,
+  "use_dropout": true,
+  "dropout_rates": [
+    0.1,
+    0.1,
+    0.1,
+    0.05
+  ]
+}
