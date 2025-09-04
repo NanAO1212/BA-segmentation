@@ -19,23 +19,24 @@
     "editor.accessibilitySupport": "on",
     "python.analysis.typeCheckingMode": "standard",
     "settingsSync.ignoredExtensions": [],
-
     // 你的Conda环境配置（精确路径）
     "python.defaultInterpreterPath": "C:/Users/nanao/conda/envs/torch-env/python.exe",
     "python.terminal.activateEnvironment": true,
     "python.condaPath": "C:/Users/nanao/conda/Scripts/conda.exe",
     "python.terminal.activateEnvInCurrentTerminal": true,
-    
     // Python项目设置
     "python.formatting.provider": "black",
     "python.linting.enabled": true,
     "python.linting.flake8Enabled": true,
     "editor.formatOnSave": true,
-    "editor.rulers": [80, 88, 120],
+    "editor.rulers": [
+        80,
+        88,
+        120
+    ],
     "editor.tabSize": 4,
     "files.trimTrailingWhitespace": true,
     "files.insertFinalNewline": true,
-    
     // 排除大文件（避免误同步）
     "files.exclude": {
         "**/data": true,
@@ -47,14 +48,15 @@
         "**/logs": true,
         "**/venv": true
     },
-    
     "search.exclude": {
         "**/data": true,
         "**/results": true,
         "**/__pycache__": true,
         "**/venv": true
     },
-    
     "terminal.integrated.defaultProfile.windows": "PowerShell",
-    "terminal.integrated.cwd": "${workspaceFolder}"
+    "terminal.integrated.cwd": "${workspaceFolder}",
+    "python-envs.defaultEnvManager": "ms-python.python:conda",
+    "python-envs.defaultPackageManager": "ms-python.python:conda",
+    "python-envs.pythonProjects": []
 }
